@@ -1,0 +1,58 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row divider green">
+  <div class="col-md-12"></div>
+</div>
+<div class="row banner menu">
+  <div class="col-md-11 col-md-offset-1">
+    <h1>New User</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-1 padding-top">
+    <form action="{{ url_for('new_user') }}" method = "POST">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type ="text" class="form-control" maxlength="80" size="80" name="name">
+        <div class="padding-bottom"></div>
+        <label for="name">Username:</label>
+        <input type ="text" class="form-control" maxlength="32" size="32" name="username">
+        <div class="padding-bottom"></div>
+        <label for="name">Email:</label>
+        <input type ="email" class="form-control" maxlength="80" size="80" name="email">
+        <div class="padding-bottom"></div>
+        <label for="name">Password:</label>
+        <input type ="password" class="form-control" maxlength="32" size="32" name="password">
+        <div class="padding-bottom"></div>
+        <label for="name">Confirm Password:</label>
+        <input type ="password" class="form-control" maxlength="32" size="32" name="conf_password">
+        <div class="padding-bottom"></div>
+        <div>
+          <button type="submit" class="btn btn-default" id="submit">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Create
+          </button>
+          <a href = "{{ url_for('showCategories') }}">
+            <button type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel
+            </button>
+          </a>
+        </div>
+        <input type="hidden" name="state" value="{{ STATE }}">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-1">
+    <h5>Please, verify if the connection is secure.</h5>
+    <h6>See the site identity button in the address bar.
+        Observe if there is a padlock.This means a secure connection.
+        But, it can't have any warning triangle or red strikethrough.
+    </h6>
+  </div>
+</div>
+<br>
+{% endblock %}

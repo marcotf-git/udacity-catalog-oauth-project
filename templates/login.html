@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start"></script>
+  <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+  <div id="login_page">
+    <h3>Login with your Google account:</h3>
+    <!-- GOOGLE PLUS SIGN IN BUTTON-->
+    <div id="signinButton"> <span class="g-signin"
+        data-scope="openid email profile"
+        data-clientid="{{CLIENT_ID}}"
+        data-redirecturi="postmessage"
+        data-accesstype="offline"
+        data-cookiepolicy="single_host_origin"
+        data-callback="signInCallback"
+        data-approvalprompt="force"> </span> </div>
+    <div id="result"></div>
+    <br>
+    <script>
+    function signInCallback(authResult){
+      if (authResult['code']){
+          //Hide the sign-in button now that the user is authorized
+          $('#signinButton').attr('style', 'display: none');
+          //Hide the local login content
+          $('#local_login').attr('style', 'display: none');
+          //Send the one-time-use code to the server, by an Ajax call.
+          //If the server responds, write a 'login successful' message to the web page
+          //and then redirect back to the main restaurants page.
+          $.ajax({
+              type:'POST',
+              url:'/gconnect?state={{state}}',
+              processData: false,
+              data: authResult['code'],
+              contentType: 'application/octet-stream; charset=utf-8;',
+              success: function(result){
+                  //Handle or verify the server response if necessary.
+                  if(result){
+                      $('#result').html('Login Successful!<br>' + result);
+                      setTimeout(function(){window.location.href="/";}, 4000);
+                  } else if (authResult['error']){
+                      //Return the error to console log if there was an error
+                      console.log('There was an error: ' + authResult['error']);
+                  }else{
+                      $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                  }
+              }
+          });
+      }else{
+          console.log('There was an error');
+      }
+    }
+    </script>
+    <!--END GOOGLE PLUS SIGN IN BUTTON -->
+
+    <br>
+
+    <!-- LOCAL LOGIN USER FORM -->
+    <div id="local_login">
+      <h3>Login locally:</h3>
+      <form action="{{ url_for('local_login') }}" method="POST">
+        <div>
+          <label for="name">Username or email:</label>
+          <br>
+          <input type ="text" maxlength="80" size="32" name="username_or_email">
+          <br>
+          <br>
+          <label for="name">Password:</label>
+          <br>
+          <input type ="password" maxlength="32" size="32" name="password">
+          <br>
+          <br>
+          <button type="submit" class="btn"> Local Login </button>
+        </div>
+        <input type="hidden" name="state" value="{{state}}">
+      </form>
+      <!-- END OF LOCAL LOGIN USER FORM -->
+
+      <br>
+      <span><a href="{{ url_for('new_user') }}">Create New User</a> </span>
+      <span>|</span>
+      <span><a href = "{{ url_for('showCategories') }}">Cancel</a> </span>
+      <div>
+        <p>You can login with your Google account,
+          or create an account only for this website.</p>
+        <p>If you want to login with the locally created website account:<br>
+          * Please create a local account first, by clicking 'Create New User' above.<br>
+          * But before sending the user data, verify if the connection is secure.
+          See the site identity button in the address bar.
+          Observe if there is a padlock.This means a secure connection.
+          But, it can't have any warning triangle or red strikethrough.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row divider blue">
+  <div class="col-md-12"></div>
+</div>
+<div class="row banner menu">
+  <div class="col-md-6 col-md-offset-1">
+    <h1>Categories</h1>
+  </div>
+</div>
+
+<div class="flash">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li> <strong> {{ message }} </strong> </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+</div>
+
+{% if 'user_id' in session %}
+<div class="row padding-top padding-bottom">
+  <div class="col-md-11 col-md-offset-1 align-center"> <a href="{{ url_for('newCategory') }}">
+    <button class="btn btn-default" id="new-item">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Category</button>
+    </a> <a href="{{ url_for('newCategoryItem') }}">
+    <button class="btn btn-default">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Item</button>
+    </a> </div>
+</div>
+{% endif %}
+
+<div class="row">
+  <div class="col-md-11 col-lg-12 col-md-offset-1 padding-none">
+    {% for category in categories %}
+    <div class="col-lg-3 col-md-4 col-xs-5 category-list">
+      <a href = "{{ url_for('showCategoryItems', category_id=category.id) }}">
+      <h3>{{ category.name }}</h3>
+      </a>
+      {% if 'user_id' in session %}
+      <a href="{{ url_for('editCategory', category_id=category.id) }}">Edit</a>
+      <span>|</span>
+      <a href="{{ url_for('deleteCategory', category_id=category.id) }}">Delete</a>
+      {% endif %}
+    </div>
+    {% endfor %} </div>
+</div>
+
+<div class="row padding-bottom"></div>
+
+{% endblock %}
